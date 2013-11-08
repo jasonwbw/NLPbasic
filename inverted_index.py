@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 #
-# @author: Jason Wu (Jasonwbw@yahoo.com)
 # This is a simple Inverted Index library to pretreatment for PMI compute or similar way
+#
+# @author: Jason Wu (Jasonwbw@yahoo.com)
 
 from operator import itemgetter
 
-class InvertedIndex:
+class InvertedIndex(object):
 
   '''
   Inverted Index class for docs
@@ -28,7 +29,8 @@ class InvertedIndex:
  
     self.num_docs = 0
     self.term_doc = {}     # term : [docnum]
-    self.stopwords = []
+    self.stopwords = []    # stopwords
+    self.term_count = {}   # term appear doc count
 
     if stopword_filename:
       stopword_file = open(stopword_filename, "r")
@@ -57,9 +59,9 @@ class InvertedIndex:
     for word in words:
       try:
         self.term_doc[word]
-        self.term_doc[word].append(num_docs)
+        self.term_doc[word].append(self.num_docs)
       except:
-        self.term_doc[word] = [num_docs]
+        self.term_doc[word] = [self.num_docs, ]
     self.num_docs += 1
 
   def save_corpus_to_file(self, index_filename):
@@ -72,8 +74,8 @@ class InvertedIndex:
     output_file = open(index_filename, "w")
     
     output_file.write(str(self.num_docs) + "\n")
-    for key, value in term_doc.items():
-      output_file.write(key + "\t" + "\t".join(value) + "\n")
+    for key, value in self.term_doc.items():
+      output_file.write(key + "\t" + "\t".join([str(i) for i in value]) + "\n")
     output_file.close()
   
   def load_corpus_from_file(self, index_filename):
@@ -83,11 +85,12 @@ class InvertedIndex:
     Attributes:
       index_filename: build by save_corpus_to_file
     '''
-    self.num_docs = 0
-    self.term_doc = {}     # term : [docnum]
+    self.term_doc = {}   
+    self.term_count = {} 
     with open(index_filename) as fp:
+      line = fp.readline()
+      self.num_docs = int(line.strip())
       for line in fp:
-        self.num_docs += 1
         word, docs = line.split("\t", 1)
         self.term_doc[word] = map(int, docs.split("\t"))
 
@@ -100,12 +103,13 @@ class InvertedIndex:
   def concurrence(self, w1, w2):
     '''
     Return the concurrence of w1 and w2 in one document
+      add one for smoothness
 
     Attributes:
       w1: one word
       w2: another word
     '''
-    count = 0
+    count = 1
     try:
       for item in self.term_doc[w1]: 
         if item in self.term_doc[w2] : count += 1
@@ -115,12 +119,33 @@ class InvertedIndex:
   
   def get_word_appear(self, word):
     '''
-    Return the count of the document word appeared
+    Return the count of the document word appeared.
+      added one for smoothness
 
     Attributes:
       word: the check word
     '''
+    # recorded in term_count
     try:
-      return len(self.term_doc[word])
+      return self.term_count[word]
     except:
-      return 0
+      pass
+    try:
+      self.term_count[word] = len(self.term_doc[word])+1
+      return self.term_count[word]
+    except:
+      return 1
+
+  def __iter__(self):
+    '''
+    Return the term : [docnum]
+    '''
+    for x in self.term_doc.items():
+      yield x
+
+  def get_terms(self):
+    '''
+    Return the terms
+    '''
+    return self.term_doc.keys()
+
