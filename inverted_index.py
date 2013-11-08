@@ -1,21 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 #
-# @author: Jason Wu (bowenwu@sohu-inc.com)
+# @author: Jason Wu (Jasonwbw@yahoo.com)
 # This is a simple Inverted Index library to pretreatment for PMI compute or similar way
 
-import math
-import re
 from operator import itemgetter
 
 class InvertedIndex:
 
-    '''
-    Inverted Index class for docs
-    
-      The library constructs an inverted index corpus from documents specified by the client or reading from input files.
-      It saves the document appear and handle some count for PMI or other algorithm.
-    '''   
+  '''
+  Inverted Index class for docs
+
+    The library constructs an inverted index corpus from documents specified by the client or reading from input files.
+    It saves the document appear and handle some count for PMI or other algorithm.
+  '''   
 
   def __init__(self, stopword_filename = None):
     '''
