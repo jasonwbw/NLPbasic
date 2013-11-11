@@ -33,13 +33,16 @@ class TopkHeapTestCase(unittest.TestCase):
       # test the push and get all method for PMIElement
       b = PMIElement('b', 2)    
       c = PMIElement('c', 3)    
-      d = PMIElement('d', 3)    
+      d = PMIElement('d', 1) 
+      f = PMIElement('d', 4)    
       self.heap.push(b)
-      self.assertEqual(set([b]), set(self.heap.topK()))
+      self.assertEqual([b], self.heap.topK())
       self.heap.push(c)
-      self.assertEqual(set([b, c]), set(self.heap.topK()))
+      self.assertEqual([c,b], self.heap.topK())
       self.heap.push(d)
-      self.assertEqual(set([c, d]), set(self.heap.topK()))
+      self.assertEqual([c, b], self.heap.topK())
+      self.heap.push(f)
+      self.assertEqual([f, c], self.heap.topK())
 
     def testPrintSomething(self):
       pass
