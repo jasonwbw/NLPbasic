@@ -26,14 +26,16 @@ class PMITestCase(unittest.TestCase):
       self.pmi = None  
     
     def testTopPMI(self): 
-      a = PMIElement('a', math.log(2/(4.0*5/5), 2))
-      b = PMIElement('b', math.log(1/(4.0*1/5), 2))
-      d = PMIElement('d', math.log(2/(4.0*3/5), 2))
-      e = PMIElement('e', math.log(2/(4.0*4/5), 2))
-      f = PMIElement('f', math.log(2/(4.0*5/5), 2))
-      for i in self.pmi.get_top_pmi('c'):
-        print i
-      self.assertEqual(set([b, d]), set(self.pmi.get_top_pmi('c')))
+      a = PMIElement('a', math.log(2/(2.0*5/5), 2))
+      b = PMIElement('b', math.log(1/(2.0*1/5), 2))
+      d = PMIElement('d', math.log(2/(2.0*3/5), 2))
+      e = PMIElement('e', math.log(2/(2.0*4/5), 2))
+      f = PMIElement('f', math.log(2/(2.0*5/5), 2))
+      for i in range(len(self.pmi.get_top_pmi('c'))):
+        if i == 0:
+          self.assertEqual(b, self.pmi.get_top_pmi('c')[i])
+        else:
+          self.assertEqual(a, self.pmi.get_top_pmi('c')[i])
 
     def testPrintSomething(self):
       pass
