@@ -24,18 +24,18 @@ class InvertedIndexTestCase(unittest.TestCase):
       self.assertEqual(5, self.iindex.get_num_docs())
 
     def testConcurrence(self):
-      self.assertEqual(6, self.iindex.concurrence('a', 'f'))
-      self.assertEqual(5, self.iindex.concurrence('a', 'e'))
-      self.assertEqual(4, self.iindex.concurrence('d', 'e'))
-      self.assertEqual(2, self.iindex.concurrence('b', 'e'))
-      self.assertEqual(1, self.iindex.concurrence('a', 'g'))
+      self.assertEqual(5, self.iindex.concurrence('a', 'f'))
+      self.assertEqual(4, self.iindex.concurrence('a', 'e'))
+      self.assertEqual(3, self.iindex.concurrence('d', 'e'))
+      self.assertEqual(1, self.iindex.concurrence('b', 'e'))
+      self.assertEqual(0, self.iindex.concurrence('a', 'g'))
 
     def testGetWordAppear(self):
       # added for smoothness
-      self.assertEqual(6, self.iindex.get_word_appear('a'))
-      self.assertEqual(5, self.iindex.get_word_appear('e'))
-      self.assertEqual(4, self.iindex.get_word_appear('d'))
-      self.assertEqual(2, self.iindex.get_word_appear('b'))
+      self.assertEqual(5, self.iindex.get_word_appear('a'))
+      self.assertEqual(4, self.iindex.get_word_appear('e'))
+      self.assertEqual(3, self.iindex.get_word_appear('d'))
+      self.assertEqual(1, self.iindex.get_word_appear('b'))
 
     def testGetTerms(self):
       self.assertEqual(set(['a', 'b', 'c', 'd', 'e', 'f']), set(self.iindex.get_terms()))

@@ -109,7 +109,7 @@ class InvertedIndex(object):
       w1: one word
       w2: another word
     '''
-    count = 1
+    count = 0.0
     try:
       for item in self.term_doc[w1]: 
         if item in self.term_doc[w2] : count += 1
@@ -127,14 +127,14 @@ class InvertedIndex(object):
     '''
     # recorded in term_count
     try:
-      return self.term_count[word]
+      return float(self.term_count[word])
     except:
       pass
     try:
-      self.term_count[word] = len(self.term_doc[word])+1
-      return self.term_count[word]
+      self.term_count[word] = len(self.term_doc[word])
+      return float(self.term_count[word])
     except:
-      return 1
+      return 0.0
 
   def __iter__(self):
     '''
