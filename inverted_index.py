@@ -126,15 +126,16 @@ class InvertedIndex(object):
       word: the check word
     '''
     # recorded in term_count
+    base = 0.0
     try:
-      return float(self.term_count[word])
+      return self.term_count[word]
     except:
       pass
     try:
-      self.term_count[word] = len(self.term_doc[word])
-      return float(self.term_count[word])
+      self.term_count[word] = base + len(self.term_doc[word])
+      return self.term_count[word]
     except:
-      return 0.0
+      return base
 
   def __iter__(self):
     '''
