@@ -52,31 +52,31 @@ class TopkHeap(object):
 		k : top k
 		data: a list contain the top k data
 	'''
-
-    def __init__(self, k = 50):
-        self.k = k
-        self.data = []
-
-    def push(self, elem):
-    	'''Push new elem to heap
-
-    	Args:
-    		elem ： the elem to add
-    	'''
-        if len(self.data) < self.k:
-            heapq.heappush(self.data, elem)
-        else:
-            topk_small = self.data[0]
-            if elem > topk_small:
-                heapq.heapreplace(self.data, elem) 
-
-    def topK(self):
-    	'''Get top k elements
-
-    	Returns:
-    		a list of top k
-    	'''
-    	return sorted(self.data)[::-1]
+	
+	def __init__(self, k = 50):
+	    self.k = k
+	    self.data = []
+	
+	def push(self, elem):
+		'''Push new elem to heap
+		
+		Args:
+			elem ： the elem to add
+		'''
+		if len(self.data) < self.k:
+			heapq.heappush(self.data, elem)
+		else:
+			topk_small = self.data[0]
+			if elem > topk_small:
+				heapq.heapreplace(self.data, elem) 
+	
+	def topK(self):
+		'''Get top k elements
+		
+		Returns:
+			a list of top k
+		'''
+		return sorted(self.data)[::-1]
 
 
 class PMI(object):
@@ -116,8 +116,7 @@ class PMI(object):
 				# PMI(t1, t2) = log(p(t1,t2)/(p(t1)p(t2)))
 				to_log = self.iindex.concurrence(terms[i], terms[j]) \
 					/(self.iindex.get_word_appear(terms[i]) \
-						* self.iindex.get_word_appear(terms[j]) \
-						/ self.iindex.get_num_docs())
+						* self.iindex.get_word_appear(terms[j]))
 				if to_log == 0:
 					pmi = inf
 				else:

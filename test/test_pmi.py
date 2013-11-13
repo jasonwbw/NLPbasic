@@ -5,10 +5,10 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-from pmi import TopkHeap
-from pmi import PMIElement
-from pmi import PMI
-from inverted_index import InvertedIndex
+from ..nlp_basic.pmi import TopkHeap
+from ..nlp_basic.pmi import PMIElement
+from ..nlp_basic.pmi import PMI
+from ..nlp_basic.inverted_index import InvertedIndex
 import sys
 import unittest
 import math
@@ -16,7 +16,7 @@ import math
 class PMITestCase(unittest.TestCase):  
     def setUp(self):  
       self.iindex = InvertedIndex()
-      for line in file("test.file"):
+      for line in file("./taobaokr/test/test.file"):
         self.iindex.add_input_document(line.strip())
       self.pmi = PMI(self.iindex, top = 2)
       self.pmi.build()
@@ -26,11 +26,11 @@ class PMITestCase(unittest.TestCase):
       self.pmi = None  
     
     def testTopPMI(self): 
-      a = PMIElement('a', math.log(2/(2.0*5/5), 2))
-      b = PMIElement('b', math.log(1/(2.0*1/5), 2))
-      d = PMIElement('d', math.log(2/(2.0*3/5), 2))
-      e = PMIElement('e', math.log(2/(2.0*4/5), 2))
-      f = PMIElement('f', math.log(2/(2.0*5/5), 2))
+      a = PMIElement('a', math.log(2/(2.0*5), 2))
+      b = PMIElement('b', math.log(1/(2.0*1), 2))
+      d = PMIElement('d', math.log(2/(2.0*3), 2))
+      e = PMIElement('e', math.log(2/(2.0*4), 2))
+      f = PMIElement('f', math.log(2/(2.0*5), 2))
       for i in range(len(self.pmi.get_top_pmi('c'))):
         if i == 0:
           self.assertEqual(b, self.pmi.get_top_pmi('c')[i])
