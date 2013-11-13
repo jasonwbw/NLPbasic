@@ -1,4 +1,13 @@
 NLPbasic
 ========
 
-some basic tools for nlp
+some basic tools for nlp.
+
+Code Standards
+--------
+the code standards is use the google's style for open source, and there is the chinese version
+
+List of completed function
+--------  
+base inverted index(just for other methods)  
+PMI(Pointwise mutual information)  
