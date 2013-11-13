@@ -5,7 +5,7 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-from pmi import PMIElement
+from ..basic.pmi import PMIElement
 import sys
 import unittest
 

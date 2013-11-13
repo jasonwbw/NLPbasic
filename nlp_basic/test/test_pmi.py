@@ -5,10 +5,10 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-from ..nlp_basic.pmi import TopkHeap
-from ..nlp_basic.pmi import PMIElement
-from ..nlp_basic.pmi import PMI
-from ..nlp_basic.inverted_index import InvertedIndex
+from ..basic.pmi import TopkHeap
+from ..basic.pmi import PMIElement
+from ..basic.pmi import PMI
+from ..basic.inverted_index import InvertedIndex
 import sys
 import unittest
 import math
@@ -16,7 +16,7 @@ import math
 class PMITestCase(unittest.TestCase):  
     def setUp(self):  
       self.iindex = InvertedIndex()
-      for line in file("./taobaokr/test/test.file"):
+      for line in file("./nlp_basic/test/test.file"):
         self.iindex.add_input_document(line.strip())
       self.pmi = PMI(self.iindex, top = 2)
       self.pmi.build()

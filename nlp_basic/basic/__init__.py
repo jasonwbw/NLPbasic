@@ -3,7 +3,7 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-import basic
-import test
+import inverted_index
+import pmi
 
-__all__ = ['basic', 'test']
+__all__ = ['inverted_index', 'pmi']

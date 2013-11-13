@@ -5,7 +5,7 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-from inverted_index import InvertedIndex
+from ..basic.inverted_index import InvertedIndex
 import sys
 import unittest
 

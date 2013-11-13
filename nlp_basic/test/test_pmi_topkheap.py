@@ -5,7 +5,7 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-from pmi import TopkHeap
+from ..basic.pmi import TopkHeap
 from pmi import PMIElement
 import sys
 import unittest
