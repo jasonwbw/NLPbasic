@@ -9,50 +9,52 @@ from operator import itemgetter
 
 class InvertedIndex(object):
 
-  '''
-  Inverted Index class for docs
+  '''Inverted Index class for docs
 
-    The library constructs an inverted index corpus from documents specified by the client or reading from input files.
-    It saves the document appear and handle some count for PMI or other algorithm.
+  The library constructs an inverted index corpus from documents specified by the client or reading from input files.
+  It saves the document appear and handle some count for PMI or other algorithm.
+
+  Attributes:
+    num_docs: number of document computed
+    term_doc: dictory of "term : doc number that term appeared"
+    stopwords: stopword list
+    term_count: dictory of "term : appeared document count" this is a lazy loading dictory
   '''   
 
   def __init__(self, stopword_filename = None):
-    '''
-    Initialize the index.
+    '''Initialize the index.
 
-      If a stopword file is specified, reads the stopword list from it, in
-      the format of one stopword per line.
+    If a stopword file is specified, reads the stopword list from it, in
+    the format of one stopword per line.
 
-    Attributes:
+    Args:
       stopword_filename: file with one stopword in one line
     '''
  
     self.num_docs = 0
-    self.term_doc = {}     # term : [docnum]
-    self.stopwords = []    # stopwords
-    self.term_count = {}   # term appear doc count
+    self.term_doc = {}    
+    self.stopwords = []    
+    self.term_count = {}   
 
     if stopword_filename:
       stopword_file = open(stopword_filename, "r")
       self.stopwords = [line.strip() for line in stopword_file]
 
   def get_tokens(self, _str):
-    '''
-    Break a string into tokens, preserving URL tags as an entire token.
+    '''Break a string into tokens, preserving URL tags as an entire token.
 
-      This implementation does not preserve case.  
-      Clients may wish to override this behavior with their own tokenization.
+    This implementation does not preserve case.  
+    Clients may wish to override this behavior with their own tokenization.
 
-    Attributes:
+    Args:
       _str: the string to split
     '''
     return _str.strip().split()
   
   def add_input_document(self, _input):
-    '''
-    Add terms in the specified document to the inverted index.
+    '''Add terms in the specified document to the inverted index.
 
-    Attributes:
+    Args:
       _input: the input content
     '''
     words = set(self.get_tokens(_input))
@@ -65,10 +67,9 @@ class InvertedIndex(object):
     self.num_docs += 1
 
   def save_corpus_to_file(self, index_filename):
-    '''
-    Save the inverted index to the specified file.
+    '''Save the inverted index to the specified file.
     
-    Attributes:
+    Args:
       index_filename: the specified file
     '''
     output_file = open(index_filename, "w")
@@ -79,10 +80,9 @@ class InvertedIndex(object):
     output_file.close()
   
   def load_corpus_from_file(self, index_filename):
-    '''
-    Load corpus from index file,  this file must builded from this class by save_corpus_to_file method
+    '''Load corpus from index file,  this file must builded from this class by save_corpus_to_file method
     
-    Attributes:
+    Args:
       index_filename: build by save_corpus_to_file
     '''
     self.term_doc = {}   
@@ -95,17 +95,17 @@ class InvertedIndex(object):
         self.term_doc[word] = map(int, docs.split("\t"))
 
   def get_num_docs(self):
-    '''
-    Return the total number of documents added.
+    '''Return the total number of documents added.
+
+    Returns:
+      Total number of documents
     '''
     return self.num_docs
   
   def concurrence(self, w1, w2):
-    '''
-    Return the concurrence of w1 and w2 in one document
-      add one for smoothness
+    '''Return the concurrence of w1 and w2 in one document 
 
-    Attributes:
+    Args:
       w1: one word
       w2: another word
     '''
@@ -117,36 +117,37 @@ class InvertedIndex(object):
       pass
     return count
   
-  def get_word_appear(self, word):
-    '''
-    Return the count of the document word appeared.
-      added one for smoothness
+  def get_word_appear(self, term):
+    '''Return the count of the document term appeared.
+    
+    Args:
+      term: the check term
 
-    Attributes:
-      word: the check word
+    Returns:
+      term appear time
     '''
     # recorded in term_count
     base = 0.0
     try:
-      return self.term_count[word]
+      return self.term_count[term]
     except:
       pass
     try:
-      self.term_count[word] = base + len(self.term_doc[word])
-      return self.term_count[word]
+      self.term_count[term] = base + len(self.term_doc[term])
+      return self.term_count[term]
     except:
       return base
 
   def __iter__(self):
-    '''
-    Return the term : [docnum]
-    '''
+    '''Return the term : [docnum]'''
     for x in self.term_doc.items():
       yield x
 
   def get_terms(self):
-    '''
-    Return the terms
+    '''Return the terms
+
+    Returns:
+      A list object of terms
     '''
     return self.term_doc.keys()
 
