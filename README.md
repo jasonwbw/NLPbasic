@@ -9,5 +9,5 @@ the code standards is use the google's style for open source, and there is the c
 
 List of completed function
 --------  
-base inverted index(just for other methods)  
+Inverted index(just for other methods)  
 PMI(Pointwise mutual information)  
