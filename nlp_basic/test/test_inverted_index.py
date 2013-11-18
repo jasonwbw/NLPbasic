@@ -12,10 +12,10 @@ import unittest
 class InvertedIndexTestCase(unittest.TestCase):  
     def setUp(self):  
       self.iindex = InvertedIndex()
-      for line in file("test.file"):
+      for line in file("./nlp_basic/test/test.file"):
         self.iindex.add_input_document(line.strip())
-      self.iindex.save_corpus_to_file("inverted.index")
-      self.iindex.load_corpus_from_file("inverted.index")
+      self.iindex.save_corpus_to_file("./nlp_basic/test/inverted.index")
+      self.iindex.load_corpus_from_file("./nlp_basic/test/inverted.index")
           
     def tearDown(self):  
       self.iindex = None  

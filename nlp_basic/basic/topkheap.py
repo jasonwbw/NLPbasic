@@ -35,7 +35,7 @@ class TopkHeap(object):
 			if elem > topk_small:
 				heapq.heapreplace(self.data, elem) 
 	
-	def topK(self):
+	def topk(self):
 		'''Get top k elements
 		
 		Returns:

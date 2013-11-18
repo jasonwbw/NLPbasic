@@ -3,6 +3,8 @@
 #
 # This is a simple PMI tool based on inverted_index
 #
+# Reference: http://en.wikipedia.org/wiki/Pointwise_mutual_information 
+#
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
 from inverted_index import InvertedIndex
@@ -70,22 +72,25 @@ class PMI(object):
 
 		All terms computed is from iindex's get_terms method.
 		'''
-		inf = -float('inf')
+		
 		terms = self.iindex.get_terms()
 		for term in terms:
 			self.term_pmi[term] = TopkHeap(self.top)
 		for i in range(len(terms)-1):
 			for j in range(i+1, len(terms)):
-				# PMI(t1, t2) = log(p(t1,t2)/(p(t1)p(t2)))
-				to_log = self.iindex.concurrence(terms[i], terms[j]) \
-					/(self.iindex.get_word_appear(terms[i]) \
-						* self.iindex.get_word_appear(terms[j]))
-				if to_log == 0:
-					pmi = inf
-				else:
-					pmi = math.log(to_log,  2)
+				pmi = self.compute_pmi(terms[i], terms[j])
 				self.term_pmi[terms[i]].push(PMIElement(terms[j], pmi))
 				self.term_pmi[terms[j]].push(PMIElement(terms[i], pmi))
+
+	def compute_pmi(self, t1 , t2):
+		# PMI(t1, t2) = log(p(t1,t2)/(p(t1)p(t2)))
+		to_log = self.iindex.concurrence(t1, t2) \
+			/(self.iindex.get_word_appear(t1) \
+			* self.iindex.get_word_appear(t2))
+		if to_log == 0:
+			return -float('inf')
+		else:
+			return math.log(to_log,  2)
 
 	def get_top_pmi(self, term):
 		'''Get top pmi elements of given term.
@@ -96,4 +101,4 @@ class PMI(object):
 		Returns:
 			A list object of PMIElement
 		'''
-		return self.term_pmi[term].topK()
+		return self.term_pmi[term].topk()

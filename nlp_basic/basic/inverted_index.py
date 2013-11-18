@@ -6,6 +6,7 @@
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
 from operator import itemgetter
+from topkheap import TopkHeap
 
 class InvertedIndex(object):
 
@@ -155,4 +156,4 @@ class InvertedIndex(object):
     heap = TopkHeap(k)
     for term in self.get_terms():
       heap.push((self.get_word_appear(term), term))
-    return heap.topK()
+    return heap.topk()
