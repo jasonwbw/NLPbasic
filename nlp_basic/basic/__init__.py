@@ -6,5 +6,6 @@
 import inverted_index
 import pmi
 import topkheap
+import class_tfidf
 
-__all__ = ['inverted_index', 'pmi', 'topkheap']
+__all__ = ['inverted_index', 'pmi', 'topkheap', 'class_tfidf']
