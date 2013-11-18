@@ -5,8 +5,8 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-from ..basic.pmi import TopkHeap
-from pmi import PMIElement
+from ..basic.topkheap import TopkHeap
+from ..basic.pmi import PMIElement
 import sys
 import unittest
 
@@ -23,11 +23,11 @@ class TopkHeapTestCase(unittest.TestCase):
       c = 3 
       d = 4  
       self.heap.push(b)
-      self.assertEqual(set([b]), set(self.heap.topK()))
+      self.assertEqual(set([b]), set(self.heap.topk()))
       self.heap.push(c)
-      self.assertEqual(set([b, c]), set(self.heap.topK()))
+      self.assertEqual(set([b, c]), set(self.heap.topk()))
       self.heap.push(d)
-      self.assertEqual(set([c, d]), set(self.heap.topK()))
+      self.assertEqual(set([c, d]), set(self.heap.topk()))
 
     def testPMIElement(self): 
       # test the push and get all method for PMIElement
@@ -36,13 +36,13 @@ class TopkHeapTestCase(unittest.TestCase):
       d = PMIElement('d', 1) 
       f = PMIElement('d', 4)    
       self.heap.push(b)
-      self.assertEqual([b], self.heap.topK())
+      self.assertEqual([b], self.heap.topk())
       self.heap.push(c)
-      self.assertEqual([c,b], self.heap.topK())
+      self.assertEqual([c,b], self.heap.topk())
       self.heap.push(d)
-      self.assertEqual([c, b], self.heap.topK())
+      self.assertEqual([c, b], self.heap.topk())
       self.heap.push(f)
-      self.assertEqual([f, c], self.heap.topK())
+      self.assertEqual([f, c], self.heap.topk())
 
     def testPrintSomething(self):
       pass

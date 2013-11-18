@@ -5,5 +5,6 @@
 
 import inverted_index
 import pmi
+import topkheap
 
-__all__ = ['inverted_index', 'pmi']
+__all__ = ['inverted_index', 'pmi', 'topkheap']

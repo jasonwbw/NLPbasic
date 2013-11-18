@@ -6,7 +6,7 @@
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
 from inverted_index import InvertedIndex
-import heapq
+from topkheap import TopkHeap
 import math
 
 class PMIElement(object):
@@ -40,43 +40,6 @@ class PMIElement(object):
 	def __str__(self):
 		# t2:pmi
 		return self.t2 + ":" + str(self.pmi)
-
-
-class TopkHeap(object):
-
-	'''Heap save the top k element
-
-	Use the heapq in python.
-
-	Attributes:
-		k : top k
-		data: a list contain the top k data
-	'''
-	
-	def __init__(self, k = 50):
-	    self.k = k
-	    self.data = []
-	
-	def push(self, elem):
-		'''Push new elem to heap
-		
-		Args:
-			elem ： the elem to add
-		'''
-		if len(self.data) < self.k:
-			heapq.heappush(self.data, elem)
-		else:
-			topk_small = self.data[0]
-			if elem > topk_small:
-				heapq.heapreplace(self.data, elem) 
-	
-	def topK(self):
-		'''Get top k elements
-		
-		Returns:
-			a list of top k
-		'''
-		return sorted(self.data)[::-1]
 
 
 class PMI(object):

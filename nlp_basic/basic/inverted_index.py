@@ -151,3 +151,8 @@ class InvertedIndex(object):
     '''
     return self.term_doc.keys()
 
+  def top_k_appear(self, k):
+    heap = TopkHeap(k)
+    for term in self.get_terms():
+      heap.push((self.get_word_appear(term), term))
+    return heap.topK()

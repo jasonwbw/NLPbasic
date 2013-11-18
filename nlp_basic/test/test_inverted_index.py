@@ -40,6 +40,9 @@ class InvertedIndexTestCase(unittest.TestCase):
     def testGetTerms(self):
       self.assertEqual(set(['a', 'b', 'c', 'd', 'e', 'f']), set(self.iindex.get_terms()))
 
+    def testTopKAppear(self):
+      self.assertEqual([(5.0, 'f'), (5.0, 'a'), (4.0, 'e')], self.iindex.top_k_appear(3))
+
     def testPrintSomething(self):
       for i in self.iindex:
         print "InvertedIndexTestCase.testPrintSomething.case1:", i

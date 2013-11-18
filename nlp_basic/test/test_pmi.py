@@ -5,7 +5,7 @@
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
-from ..basic.pmi import TopkHeap
+from ..basic.topkheap import TopkHeap
 from ..basic.pmi import PMIElement
 from ..basic.pmi import PMI
 from ..basic.inverted_index import InvertedIndex
