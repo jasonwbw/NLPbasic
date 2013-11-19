@@ -84,7 +84,8 @@ class PMI(object):
 
 	def compute_pmi(self, t1 , t2):
 		# PMI(t1, t2) = log(p(t1,t2)/(p(t1)p(t2)))
-		to_log = self.iindex.concurrence(t1, t2) \
+		#             = concurrent * N / (xapp * yapp)
+		to_log = self.iindex.concurrence(t1, t2) * self.iindex.get_num_docs() \
 			/(self.iindex.get_word_appear(t1) \
 			* self.iindex.get_word_appear(t2))
 		if to_log == 0:
