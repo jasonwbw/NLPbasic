@@ -18,11 +18,12 @@ class NPMI(PMI):
 		to_log = self.iindex.concurrence(t1, t2) * self.iindex.get_num_docs()\
 			/(self.iindex.get_word_appear(t1) \
 			* self.iindex.get_word_appear(t2))
-		p_t1_t2 = math.log(self.iindex.concurrence(t1, t2) \
-		    /(self.iindex.get_num_docs()), 2)
 		if to_log == 0:
 			return -1
-		elif p_t1_t2 == 0:
+
+		p_t1_t2 = math.log(self.iindex.concurrence(t1, t2) \
+		    /(self.iindex.get_num_docs()), 2)
+		if p_t1_t2 == 0:
 			return 1
 		else:
 			return -math.log(to_log,  2) / p_t1_t2
