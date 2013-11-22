@@ -5,7 +5,7 @@
 #
 # Reference: http://en.wikipedia.org/wiki/Pointwise_mutual_information 
 #
-# @author: Jason Wu (Jasonwbw@yahoo.com)
+# @author: Jason Wu (bowenwu@sohu-inc.com)
 
 from inverted_index import InvertedIndex
 from topkheap import TopkHeap
@@ -42,6 +42,14 @@ class PMIElement(object):
 	def __str__(self):
 		# t2:pmi
 		return self.t2 + ":" + str(self.pmi)
+
+	def get_pair(self):
+		'''get term and pmi pair
+
+		Returns:
+			t2 and pmi tuple
+		'''
+		return (self.t2, self.pmi)
 
 
 class PMI(object):
