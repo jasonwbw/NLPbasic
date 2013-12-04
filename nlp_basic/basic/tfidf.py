@@ -18,29 +18,34 @@ from operator import itemgetter
 
 class TfIdf:
 
-  """Tf-idf class implementing http://en.wikipedia.org/wiki/Tf-idf.
+  '''Tf-idf class implementing http://en.wikipedia.org/wiki/Tf-idf.
   
      The library constructs an IDF corpus and stopword list either from
      documents specified by the client, or by reading from input files.  It
      computes IDF for a specified term based on the corpus, or generates
      keywords ordered by tf-idf for a specified document.
-  """
+  '''
 
   def __init__(self, corpus_filename = None, stopword_filename = None,
                DEFAULT_IDF = 1.5):
-    """Initialize the idf dictionary.  
+    '''Initialize the idf dictionary.  
     
-       If a corpus file is supplied, reads the idf dictionary from it, in the
-       format of:
-         # of total documents
-         term: # of documents containing the term
+    If a corpus file is supplied, reads the idf dictionary from it, in the
+    format of:
+      # of total documents
+      term: # of documents containing the term
 
-       If a stopword file is specified, reads the stopword list from it, in
-       the format of one stopword per line.
+    If a stopword file is specified, reads the stopword list from it, in
+    the format of one stopword per line.
 
-       The DEFAULT_IDF value is returned when a query term is not found in the
-       idf corpus.
-    """
+    The DEFAULT_IDF value is returned when a query term is not found in the
+    idf corpus.
+
+    Args:
+      corpus_filename : old idf file, format: save by this class
+      stopword_filename : stopword file, format: one stopword one line
+      DEFAULT_IDF : default idf for the term that have not appeared
+    '''
     self.num_docs = 0
     self.term_num_docs = {}     # term : num_docs_containing_term
     self.stopwords = []
@@ -63,27 +68,43 @@ class TfIdf:
       stopword_file = open(stopword_filename, "r")
       self.stopwords = [line.strip() for line in stopword_file]
 
-  def get_tokens(self, _str):
-    """Break a string into tokens, preserving URL tags as an entire token.
+  def get_tokens(self, _str, token = None):
+    '''Break a string into tokens, preserving URL tags as an entire token.
 
-       This implementation does not preserve case.  
-       Clients may wish to override this behavior with their own tokenization.
-    """
-    #return re.findall(r"<a.*?/a>|<[^\>]*>|[\w'@#]+", str.lower())
-    return _str.strip().split()
+    This implementation does not preserve case.  
+    Clients may wish to override this behavior with their own tokenization.
 
-  def add_input_document(self, _input):
-    """Add terms in the specified document to the idf dictionary."""
+    Args:
+      _str : the str to split by token
+      token : token for split, default is space
+    '''
+    if token:
+      return _str.strip().split(token)
+    return _str.strip().split(token)
+
+  def add_input_document(self, _input, token = None):
+    '''Add terms in the specified document to the idf dictionary.
+
+    Args:
+      _input : the input text for term split by token
+      token : token to split term
+    '''
     self.num_docs += 1
-    words = set(self.get_tokens(_input))
+    words = set(self.get_tokens(_input, token = token))
     for word in words:
       if word in self.term_num_docs:
         self.term_num_docs[word] += 1
       else:
         self.term_num_docs[word] = 1
 
-  def save_corpus_to_file(self, idf_filename, stopword_filename):
-    """Save the idf dictionary and stopword list to the specified file."""
+  def save_corpus_to_file(self, idf_filename, stopword_filename, stopword_less_k = 10):
+    '''Save the idf dictionary and stopword list to the specified file.
+
+    Args:
+      idf_filename : new idf file name to save all corpus.(contain stopwords)
+      stopword_filename : new stopword file to save stopword words
+      stopword_less_k : if term appear doc number less than this, it will save to stopwords
+    '''
     sorted_terms = sorted(self.term_num_docs.items(), key=itemgetter(1), reverse=True)
     output_file = open(idf_filename, "w")
     stopword_file = open(stopword_filename, "w")
@@ -91,23 +112,28 @@ class TfIdf:
     output_file.write(str(self.num_docs) + "\n")
     for term, num_docs in sorted_terms:
       output_file.write(term + "\t" + str(num_docs) + "\n")
-      if num_docs < 10:
+      if num_docs < stopword_less_k:
         stopword_file.write(term + "\n")
     output_file.close()
     stopword_file.close()
 
-  def save_corpus_to_without_stop(self, idf_filename, stopword_file, appear_num, filters, keepwords = []):
-    """Save the idf dictionary and stopword list to the specified file.
+  def save_corpus_to_without_stop(self, idf_filename, stopword_file, stopword_less_k, filters, keepwords = []):
+    '''Just save the idf dictionary to the specified file without stopwords list and filtered by filters.
 
-    keepwords: just for these words that appear less than appear_num
-    """
+    Args:
+      idf_filename : new idf file name to save all corpus.
+      stopword_filename : new stopword file to save stopword words
+      stopword_less_k : if term appear doc number less than this, it will save to stopwords
+      filters : lambda functions to filter terms if it return ''
+      keepwords: just for these words that appear less than stopword_less_k
+    '''
     sorted_terms = sorted(self.term_num_docs.items(), key=itemgetter(1), reverse=True)
     output_file = open(idf_filename, "w")
     stopword_file = open(stopword_file, "w")
 
     output_file.write(str(self.num_docs) + "\n")
     for term, num_docs in sorted_terms:
-      if num_docs < appear_num and term not in keepwords:
+      if num_docs < stopword_less_k and term not in keepwords:
         stopword_file.write(term + "\n")
         continue
       if term in self.stopwords:
@@ -128,16 +154,24 @@ class TfIdf:
     stopword_file.close()
 
   def get_num_docs(self):
-    """Return the total number of documents in the IDF corpus."""
+    '''Get total doc number
+
+    Returns:
+      Return the total number of documents in the IDF corpus.
+    '''
     return self.num_docs
 
   def get_idf(self, term):
-    """Retrieve the IDF for the specified term. 
+    '''Retrieve the IDF for the specified term. 
     
-       This is computed by taking the logarithm of ( 
-       (number of documents in corpus) divided by (number of documents
-        containing this term) ).
-     """
+    This is computed by taking the logarithm of ((number of documents in corpus) divided by (number of documents containing this term) ).
+
+    Args:
+      term : term to get idf
+
+    Returns:
+      Return the idf value.
+    '''
     if term in self.stopwords:
       return 0
 
@@ -146,18 +180,15 @@ class TfIdf:
 
     return math.log(float(1 + self.get_num_docs()) / 
       (1 + self.term_num_docs[term]))
-
-  def get_idf_file(self, idf_filename):
-    """Save the idf dictionary and stopword list to the specified file."""
-    output_file = open(idf_filename, "w")
-
-    for term, num_docs in self.term_num_docs.items():
-      output_file.write(term + "\t" + str(self.get_idf(term)) + "\n")
   
   def get_doc_keywords(self, curr_doc):
     """Retrieve terms and corresponding tf-idf for the specified document.
 
-       The returned terms are ordered by decreasing tf-idf.
+    Args:
+      curr_doc : computed given doc
+
+    Returns:
+      The returned terms are ordered by decreasing tf-idf.
     """
     tfidf = {}
     tokens = self.get_tokens(curr_doc)
