@@ -1,28 +1,13 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 # 
 # Copyright 2010  Niniane Wang (niniane@gmail.com)
 # Reviewed by Alex Mendes da Costa.
+#
+# Edit by Jason wu (Jasonwbw@yahoo.com)
 # 
 # This is a simple Tf-idf library.  The algorithm is described in
 #   http://en.wikipedia.org/wiki/Tf-idf
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
 
 __author__ = "Niniane Wang"
 __email__ = "niniane at gmail dot com"
@@ -70,46 +55,27 @@ class TfIdf:
 
       # Reads "term:frequency" from each subsequent line in the file.
       for line in corpus_file:
-        tokens = line.rpartition(":")
-        term = tokens[0].strip()
-        frequency = int(tokens[2].strip())
+        term, fstr = line.strip().split("\t")
+        frequency = int(fstr)
         self.term_num_docs[term] = frequency
 
     if stopword_filename:
       stopword_file = open(stopword_filename, "r")
       self.stopwords = [line.strip() for line in stopword_file]
 
-  def strQ2B(self, ustring):
-    '''
-    °Ñ×Ö·û´®È«½Ç×ª°ë½Ç
-    '''
-    ustring=ustring.decode("gbk")
-    rstring=""
-    for uchar in ustring:
-      inside_code=ord(uchar)
-      if inside_code==0x3000:
-        inside_code=0x0020
-      else:
-        inside_code-=0xfee0
-      if inside_code<0x0020 or inside_code>0x7e:
-        rstring+=uchar.encode('gbk')
-      else:
-        rstring+=(unichr(inside_code)).encode('gbk')
-    return rstring
-
-  def get_tokens(self, str):
+  def get_tokens(self, _str):
     """Break a string into tokens, preserving URL tags as an entire token.
 
        This implementation does not preserve case.  
        Clients may wish to override this behavior with their own tokenization.
     """
     #return re.findall(r"<a.*?/a>|<[^\>]*>|[\w'@#]+", str.lower())
-    return str.strip().split()
+    return _str.strip().split()
 
-  def add_input_document(self, input):
+  def add_input_document(self, _input):
     """Add terms in the specified document to the idf dictionary."""
     self.num_docs += 1
-    words = set(self.get_tokens(input))
+    words = set(self.get_tokens(_input))
     for word in words:
       if word in self.term_num_docs:
         self.term_num_docs[word] += 1
@@ -124,9 +90,42 @@ class TfIdf:
 
     output_file.write(str(self.num_docs) + "\n")
     for term, num_docs in sorted_terms:
-      output_file.write(self.strQ2B(term) + "\t" + str(num_docs) + "\n")
+      output_file.write(term + "\t" + str(num_docs) + "\n")
       if num_docs < 10:
-        stopword_file.write(self.strQ2B(term) + "\n")
+        stopword_file.write(term + "\n")
+    output_file.close()
+    stopword_file.close()
+
+  def save_corpus_to_without_stop(self, idf_filename, stopword_file, appear_num, filters, keepwords = []):
+    """Save the idf dictionary and stopword list to the specified file.
+
+    keepwords: just for these words that appear less than appear_num
+    """
+    sorted_terms = sorted(self.term_num_docs.items(), key=itemgetter(1), reverse=True)
+    output_file = open(idf_filename, "w")
+    stopword_file = open(stopword_file, "w")
+
+    output_file.write(str(self.num_docs) + "\n")
+    for term, num_docs in sorted_terms:
+      if num_docs < appear_num and term not in keepwords:
+        stopword_file.write(term + "\n")
+        continue
+      if term in self.stopwords:
+        stopword_file.write(term + "\n")
+        continue
+
+      filtered = False
+      for _filter in filters:
+        if not filtered and _filter(term.strip()) == '':
+          filtered = True
+
+      if not filtered:
+        output_file.write(term + "\t" + str(num_docs) + "\n")
+      else:
+        stopword_file.write(term + "\n")
+
+    output_file.close()
+    stopword_file.close()
 
   def get_num_docs(self):
     """Return the total number of documents in the IDF corpus."""
@@ -153,7 +152,7 @@ class TfIdf:
     output_file = open(idf_filename, "w")
 
     for term, num_docs in self.term_num_docs.items():
-      output_file.write(self.strQ2B(term) + "\t" + str(self.get_idf(term)) + "\n")
+      output_file.write(term + "\t" + str(self.get_idf(term)) + "\n")
   
   def get_doc_keywords(self, curr_doc):
     """Retrieve terms and corresponding tf-idf for the specified document.
