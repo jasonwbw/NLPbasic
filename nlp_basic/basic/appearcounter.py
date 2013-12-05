@@ -55,3 +55,34 @@ class AppearCount(TfIdf):
 			return self.word_doc_count[term]
 		except:
 			return 0
+
+	def load_result_foranalyze(self, result_file):
+		self.count_word = {}
+		self.doc_count_word = {}
+		with open(result_file, 'r') as fp:
+			for line in fp:
+				doc_count, count, word = line.strip().split("\t")
+				self.word_count[word] = int(count)
+				self.word_doc_count[word] = int(doc_count)
+				try:
+					self.count_word[int(count)] += 1
+				except:
+					self.count_word[int(count)] = 1
+				try:
+					self.doc_count_word[int(doc_count)] += 1
+				except:
+					self.doc_count_word[int(doc_count)] = 1
+
+	def count_less_appear(self, less_than):
+		res = 0
+		for i in range(less_than):
+			if i in self.count_word:
+				res += self.count_word[i]
+		return res
+
+	def doccount_less_appear(self, less_than):
+		res = 0
+		for i in range(less_than):
+			if i in self.doc_count_word:
+				res += self.doc_count_word[i]
+		return res
