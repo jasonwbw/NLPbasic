@@ -6,21 +6,29 @@
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
 from tfidf import TfIdf
+from operator import itemgetter
 
 class AppearCount(TfIdf):
-
 	def __init__(self, corpus_filename = None, stopword_filename = None, DEFAULT_IDF = 1.5):
 		TfIdf.__init__(self, corpus_filename = corpus_filename, \
 			stopword_filename = stopword_filename, DEFAULT_IDF = DEFAULT_IDF)
 		self.init_file_count()
 
 	def init_file_count(self):
+		'''Init the data structure to save the count
+		'''
 		self.word_count = {}
 		self.word_doc_count = {}
 
-	def count_file(self, _input):
+	def count_file(self, _input, token = None):
+		'''count the given file
+
+		Args:
+			_input : the input text for term split by token
+			token : token to split term
+		'''
 		counted_words = set()
-		words = [word for word in self.get_tokens(_input) if word in self.term_num_docs]
+		words = [word for word in self.get_tokens(_input, token = token) if word in self.term_num_docs]
 		for word in words:
 			try:
 				self.word_count[word] += 1
@@ -34,6 +42,11 @@ class AppearCount(TfIdf):
 			counted_words.add(word)
 
 	def get_count_result(self, filename):
+		'''Write the count result to file
+
+		Args:
+			filename : file to save the result
+		'''
 		fw = open(filename, 'w')
 		for word in self.term_num_docs:
 			if word not in self.word_doc_count:
@@ -45,18 +58,39 @@ class AppearCount(TfIdf):
 		fw.close()
 
 	def get_term_appear_count(self, term):
+		'''Get the appear time of given term
+
+		Args:
+			term : term to check the appear time
+
+		Returns:
+			appear count
+		'''
 		try:
 			return self.word_count[term]
 		except:
 			return 0
 
 	def get_term_appear_docs(self, term):
+		'''Get the docs count where given term appeared
+
+		Args:
+			term : term to check the appear time
+
+		Returns:
+			doc count
+		'''
 		try:
 			return self.word_doc_count[term]
 		except:
 			return 0
 
 	def load_result_foranalyze(self, result_file):
+		'''Load the result file and prepare for analyze
+
+		Args:
+			result_file : result file build by get_count_result method
+		'''
 		self.count_word = {}
 		self.doc_count_word = {}
 		with open(result_file, 'r') as fp:
@@ -74,6 +108,15 @@ class AppearCount(TfIdf):
 					self.doc_count_word[int(doc_count)] = 1
 
 	def count_less_appear(self, less_than):
+		'''Count word count that appeared count less than given threshold
+		Must call after load_result_foranalyze
+
+		Args:
+			less_than : the threshold
+
+		Returns:
+			the count
+		'''
 		res = 0
 		for i in range(less_than):
 			if i in self.count_word:
@@ -81,6 +124,15 @@ class AppearCount(TfIdf):
 		return res
 
 	def doccount_less_appear(self, less_than):
+		'''Count word count that appeared doc count less than given threshold
+		Must call after load_result_foranalyze
+
+		Args:
+			less_than : the threshold
+
+		Returns:
+			the count
+		'''
 		res = 0
 		for i in range(less_than):
 			if i in self.doc_count_word:
