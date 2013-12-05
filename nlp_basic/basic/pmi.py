@@ -7,10 +7,6 @@
 #
 # @author: Jason Wu (bowenwu@sohu-inc.com)
 
-from inverted_index import InvertedIndex
-from topkheap import TopkHeap
-import math
-
 class PMIElement(object):
 
 	'''Term's PMI element
@@ -66,13 +62,22 @@ class PMI(object):
 	'''
 
 	def __init__(self, inverted_index, top = 50):
-		'''init all attributes'''
+		'''init all attributes
+
+		Args:
+			inverted_index : InvertedIndex instance
+			top : how many top element to save
+		'''
 		self.iindex = inverted_index
 		self.top = top
 		self.term_pmi = {}
 
 	def change_inverted_index(self, inverted_index):
-		'''change instance's iindex'''
+		'''change instance's iindex
+
+		Args:
+			inverted_index : InvertedIndex instance
+		'''
 		self.inverted_index = inverted_index
 
 	def build(self):
