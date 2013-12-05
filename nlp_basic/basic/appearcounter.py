@@ -9,6 +9,11 @@ from tfidf import TfIdf
 
 class AppearCount(TfIdf):
 
+	def __init__(self, corpus_filename = None, stopword_filename = None, DEFAULT_IDF = 1.5):
+		TfIdf.__init__(self, corpus_filename = corpus_filename, \
+			stopword_filename = stopword_filename, DEFAULT_IDF = DEFAULT_IDF)
+		self.init_file_count()
+
 	def init_file_count(self):
 		self.word_count = {}
 		self.word_doc_count = {}
@@ -31,11 +36,12 @@ class AppearCount(TfIdf):
 	def get_count_result(self, filename):
 		fw = open(filename, 'w')
 		for word in self.term_num_docs:
-			if word not in word_doc_count:
+			if word not in self.word_doc_count:
 				self.word_doc_count[word] = 0
+				self.word_count[word] = 0
 		sorted_terms = sorted(self.word_doc_count.items(), key=itemgetter(1))
 		for word, doc_count in sorted_terms:
-			fw.write(word + "\t" + str(doc_count) + '\t' + str(self.word_count[word]) + '\n')
+			fw.write(str(doc_count) + "\t" + str(self.word_count[word]) + '\t' + word + '\n')
 		fw.close()
 
 	def get_term_appear_count(self, term):
