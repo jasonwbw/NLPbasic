@@ -14,6 +14,8 @@ import math
 class NPMI(PMI):
 
 	def compute_pmi(self, t1 , t2):
+		if self.iindex.get_word_appear(t1) == 0 or self.iindex.get_word_appear(t2) == 0:
+			return -float('inf')
 		# NPMI(t1, t2) = log(p(t1,t2)/(p(t1)p(t2))) / -log(p(t1,t2))
 		to_log = self.iindex.concurrence(t1, t2) * self.iindex.get_num_docs()\
 			/(self.iindex.get_word_appear(t1) \
