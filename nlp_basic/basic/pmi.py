@@ -7,6 +7,10 @@
 #
 # @author: Jason Wu (bowenwu@sohu-inc.com)
 
+from inverted_index import InvertedIndex
+from topkheap import TopkHeap
+import math
+
 class PMIElement(object):
 
 	'''Term's PMI element
@@ -98,6 +102,8 @@ class PMI(object):
 	def compute_pmi(self, t1 , t2):
 		# PMI(t1, t2) = log(p(t1,t2)/(p(t1)p(t2)))
 		#             = concurrent * N / (xapp * yapp)
+		if self.iindex.get_word_appear(t1) == 0 or self.iindex.get_word_appear(t2) == 0:
+			return -float('inf')
 		to_log = self.iindex.concurrence(t1, t2) * self.iindex.get_num_docs() \
 			/(self.iindex.get_word_appear(t1) \
 			* self.iindex.get_word_appear(t2))
