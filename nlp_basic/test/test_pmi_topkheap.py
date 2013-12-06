@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 #
-# The unit test case for pmi.TopkHeap and PMIElement
+# The unit test case for pmi.TopkHeap
 #
 # @author: Jason Wu (Jasonwbw@yahoo.com)
 
