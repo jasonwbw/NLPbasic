@@ -122,3 +122,35 @@ class PMI(object):
 			A list object of PMIElement
 		'''
 		return self.term_pmi[term].topk()
+
+class MI(object):
+
+	'''MI compute based on PMI and InvertedIndex
+	
+    Attributes:
+    	iindex : the inverted index of given documents
+    	pmi : means the k of top k elements while hold for one term
+	'''
+
+	def __init__(self, inverted_index, pmi):
+		'''Init all attributes
+
+		Args:
+			inverted_index : InvertedIndex instance
+			top : how many top element to save
+		'''
+		self.iindex = inverted_index
+		self.pmi = pmi
+
+	def compute_mi(self, sentence1, sentence2):
+		'''Compute mi of two sentence
+
+		Args:
+			sentence1 : list of words
+			sentence2 : list of words
+		'''
+		res = 0.0
+		for t1 in sentence1:
+			for t2 in sentence2:
+				res += self.iindex.concurrence(t1, t2) / self.iindex.get_num_docs() * self.pmi.compute_pmi(t1, t2)
+		return res
