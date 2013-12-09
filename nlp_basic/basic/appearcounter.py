@@ -138,3 +138,33 @@ class AppearCount(TfIdf):
 			if i in self.doc_count_word:
 				res += self.doc_count_word[i]
 		return res
+
+	def get_words_doccount_less_appear(self, less_than):
+		'''Get word that doc it appeared in less than threshold
+
+		Args:
+			less_than : the threshold
+
+		Returns:
+			List of words that doc it appeared in less than threshold
+		'''
+		res = []
+		for word, doc_count in self.word_doc_count.items():
+			if doc_count < less_than:
+				res.append(word)
+		return res
+
+	def get_words_less_appear(self, less_than):
+		'''Get the word appear less than threshold
+
+		Args:
+			less_than : the threshold
+
+		Returns:
+			List of words that appeared in less than threshold
+		'''
+		res = []
+		for word, count in self.word_count.items():
+			if count < less_than:
+				res.append(word)
+		return res
