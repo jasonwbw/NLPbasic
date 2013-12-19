@@ -22,13 +22,14 @@ class InvertedIndex(object):
     term_count: dictory of "term : appeared document count" this is a lazy loading dictory
   '''   
 
-  def __init__(self, stopword_filename = None):
+  def __init__(self, vocabulary = None, stopword_filename = None):
     '''Initialize the index.
 
     If a stopword file is specified, reads the stopword list from it, in
     the format of one stopword per line.
 
     Args:
+      vocabulary : to build inverted index just for term in this vocabulary
       stopword_filename: file with one stopword in one line
     '''
  
@@ -36,6 +37,11 @@ class InvertedIndex(object):
     self.term_doc = {}    
     self.stopwords = []    
     self.term_count = {}   
+    self.have_vocabulary = False
+
+    if vocabulary:
+      self.have_vocabulary = True
+      self.vocabulary = vocabulary
 
     if stopword_filename:
       stopword_file = open(stopword_filename, "r")
@@ -60,6 +66,11 @@ class InvertedIndex(object):
     '''
     words = set(self.get_tokens(_input))
     for word in words:
+      if self.have_vocabulary and word not in self.vocabulary:
+        continue
+      if word in self.stopwords:
+        continue
+      
       try:
         self.term_doc[word]
         self.term_doc[word].append(self.num_docs)
@@ -127,7 +138,7 @@ class InvertedIndex(object):
     Returns:
       term appear time
     '''
-    # recorded in term_count
+    # recorded in term_count, lazy loading
     base = 0.0
     try:
       return self.term_count[term]
