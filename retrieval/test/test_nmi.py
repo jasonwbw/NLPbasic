@@ -18,7 +18,6 @@ class NMITestCase(unittest.TestCase):
     	for line in file("./nlp_basic/test/test.file"):
     		self.iindex.add_input_document(line.strip())
     	self.pmi = PMI(self.iindex)
-    	self.pmi.build()
     	self.mi = NMI(self.iindex, self.pmi)
 
     def tearDown(self):  
