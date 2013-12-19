@@ -26,14 +26,20 @@ class TopkHeap(object):
 		'''Push new elem to heap
 		
 		Args:
-			elem ： the elem to add
+			elem ：the elem to add
+
+		Returns:
+			if the elem have added to queue
 		'''
 		if len(self.data) < self.k:
 			heapq.heappush(self.data, elem)
+			return True
 		else:
 			topk_small = self.data[0]
 			if elem > topk_small:
 				heapq.heapreplace(self.data, elem) 
+				return True
+			return False
 	
 	def topk(self):
 		'''Get top k elements
