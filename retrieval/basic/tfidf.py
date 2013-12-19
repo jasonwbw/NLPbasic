@@ -82,16 +82,21 @@ class TfIdf:
       return _str.strip().split(token)
     return _str.strip().split(token)
 
-  def add_input_document(self, _input, token = None):
+  def add_input_document(self, _input, token = None, filter_num = True):
     '''Add terms in the specified document to the idf dictionary.
 
     Args:
       _input : the input text for term split by token
       token : token to split term
+      filter_num : whether filter all numbers
     '''
     self.num_docs += 1
+    if filter_num:
+      p = re.compile(r'\d*', re.L)
     words = set(self.get_tokens(_input, token = token))
     for word in words:
+      if filter_num:
+        word = p.sub("", word)
       if word in self.term_num_docs:
         self.term_num_docs[word] += 1
       else:
@@ -117,14 +122,15 @@ class TfIdf:
     output_file.close()
     stopword_file.close()
 
-  def save_corpus_to_without_stop(self, idf_filename, stopword_file, stopword_less_k, filters, keepwords = []):
+  def save_corpus_to_without_stop(self, idf_filename, stopword_file, stopword_less_k = 0, filters = [], keepwords = []):
     '''Just save the idf dictionary to the specified file without stopwords list and filtered by filters.
+    And save all other words into stopword_file
 
     Args:
       idf_filename : new idf file name to save all corpus.
       stopword_filename : new stopword file to save stopword words
       stopword_less_k : if term appear doc number less than this, it will save to stopwords
-      filters : lambda functions to filter terms if it return ''
+      filters : lambda functions to filter terms if it return true
       keepwords: just for these words that appear less than stopword_less_k
     '''
     sorted_terms = sorted(self.term_num_docs.items(), key=itemgetter(1), reverse=True)
@@ -142,7 +148,7 @@ class TfIdf:
 
       filtered = False
       for _filter in filters:
-        if not filtered and _filter(term.strip()) == '':
+        if not filtered and _filter(term.strip()):
           filtered = True
 
       if not filtered:
@@ -160,6 +166,14 @@ class TfIdf:
       Return the total number of documents in the IDF corpus.
     '''
     return self.num_docs
+
+  def get_num_words(self):
+    '''Get total term number
+
+    Returns:
+      Return the total number of term in the IDF corpus.
+    '''
+    return len(self.term_num_docs)
 
   def get_idf(self, term):
     '''Retrieve the IDF for the specified term. 
