@@ -16,7 +16,17 @@ class TopkHeapTestCase(unittest.TestCase):
           
     def tearDown(self):  
       self.heap = None  
-          
+    
+    def testPush(self):
+      b = 2
+      c = 3
+      d = 4
+      e = 1
+      self.assertEqual(True, self.heap.push(b))
+      self.assertEqual(True, self.heap.push(c))
+      self.assertEqual(True, self.heap.push(d))
+      self.assertEqual(False, self.heap.push(e))
+
     def testInt(self): 
       # test the push and get all method for normal int
       b = 2   
