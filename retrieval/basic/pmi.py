@@ -152,5 +152,7 @@ class MI(object):
 		res = 0.0
 		for t1 in sentence1:
 			for t2 in sentence2:
-				res += self.iindex.concurrence(t1, t2) / self.iindex.get_num_docs() * self.pmi.compute_pmi(t1, t2)
+				pmi = self.pmi.compute_pmi(t1, t2)
+				if pmi != -float('inf'):
+					res += self.iindex.concurrence(t1, t2) / self.iindex.get_num_docs() * pmi
 		return res
