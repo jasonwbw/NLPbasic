@@ -19,9 +19,11 @@ class ClassInvertedIndex(object):
   Attributes:
     num_docs: number of document computed
     stopwords: stopword list
-    term_count: dictory of "term : appeared document count" this is a lazy loading dictory
+    term_count: dictory of "term : {class : count}" 
+    class_count: dictory of "class : appeared document count" 
     have_vocabulary: have vocabulary or not
     vocabulary: the given vocabulary
+    stopwords: all stop words
   '''   
 
   def __init__(self, vocabulary = None, stopword_filename = None):
@@ -112,12 +114,29 @@ class ClassInvertedIndex(object):
     return self.class_count.keys()
 
   def get_word_appear(self, word, _class):
+    '''Get the word's document num in the given class
+
+    Args:
+        word : the word to check
+        _class : the class to check
+
+    Returns:
+        total num
+    '''
     try:
       return self.term_count[word][_class]
     except:
       return 0
 
   def get_class_count(self, _class):
+    '''Get the class's document num
+
+    Args:
+        _class : the class to check
+
+    Returns:
+        total num
+    '''
     try:
       return self.class_count[_class]
     except:
@@ -167,4 +186,3 @@ class EstimateMi(object):
       for term in self.ciindex.get_terms():
         res.append((self.estimate_mi(_class, term), term))
       return sorted(res)[::-1]
-
